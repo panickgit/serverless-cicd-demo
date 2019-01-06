@@ -1,0 +1,17 @@
+.card {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.card-img-top {
+  width: 100%;
+}
+
+.card-title {
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+.card-body .btn-primary {
+  background-color: navy;
+  border-color: transparent;
+}

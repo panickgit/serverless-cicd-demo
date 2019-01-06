@@ -1,0 +1,19 @@
+.header-banner-1 {
+  height: 30px;
+  background-color: green;
+}
+
+.logo {
+  font-size: 50px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-family: 'Libre Franklin', sans-serif;
+  font-weight: 700;
+}
+
+.products-grid {
+  padding: 1.5rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1000px;
+}
