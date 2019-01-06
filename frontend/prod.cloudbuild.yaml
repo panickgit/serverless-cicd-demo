@@ -1,0 +1,31 @@
+steps:
+- id: 'Install node_modules'
+  name: 'gcr.io/cloud-builders/yarn'
+  dir: 'frontend'
+  args: [ 'install', '--silent', '--non-interactive' ]
+
+# - id: 'Lint'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: [ 'run', 'lint' ]
+
+# - id: 'Unit tests'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: [ 'test' ]
+#   env:
+#   - 'CI=true'
+
+- id: 'Build'
+  name: 'gcr.io/cloud-builders/npm'
+  dir: 'frontend'
+  args: [ 'run', 'build' ]
+
+- id: 'Deploy'
+  name: 'gcr.io/$PROJECT_ID/firebase/frontend'
+  dir: 'frontend'
+  args: [ 'deploy', '-P', 'cicd-digital-conference-demo', '--non-interactive' ]
+  secretEnv: ['FIREBASE_TOKEN']
+
+secrets:
+- kmsKeyName: 'projects/cicd-digital-conference-demo/locations/global/keyRings/cloudbuilder/cryptoKeys/firebase-token'
+  secretEnv:
+    FIREBASE_TOKEN: 'CiQA/KtChGuWfK0AtQdWhWVobqpkjx9Gwy3E+eEW7OqvV99poyMSVgBhvvR2uAHLhEkyt3ZAZFcJIzUySF+Zh9Uv/eQ12NMoEgxTEb+O9HQg24vqJc1dNhVPRT3TB8u9BiLwgUd7wiZpjiM60TZShnnRpN8mCtRAODXgjmpF'
