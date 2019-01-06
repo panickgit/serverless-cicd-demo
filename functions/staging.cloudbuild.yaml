@@ -1,0 +1,49 @@
+steps:
+- id: 'Install node_modules'
+  name: 'gcr.io/cloud-builders/yarn'
+  dir: 'functions'
+  args: ['install']
+
+# - id: 'Lint'
+#   name: 'gcr.io/cloud-builders/npm'
+#   dir: 'functions'
+#   args: ['run', 'lint']
+
+# - id: 'Test'
+#   name: 'gcr.io/cloud-builders/npm'
+#   dir: 'functions'
+#   args: ['test']
+
+- id: Get functions in staging
+  name: 'gcr.io/cloud-builders/gsutil'
+  dir: 'functions'
+  args: [ '-m', 'cp', '-r', 'gs://functions-staging/', '.' ]
+
+- id: Deploy updated functions
+  name: 'gcr.io/cloud-builders/gcloud'
+  dir: 'functions'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      # Get all files in functions/ that have changed from staging
+      for f in $(diff -Nqr functions/ functions-staging/ | awk '{print $4}' | cut -d'/' -f2-); do 
+        # Convert filepath to functionName
+        functionName=$(echo ${f%?????} | sed -r 's/(\/)([a-z])/\U\2/g')
+        echo $functionName
+        gcloud beta functions deploy ${functionName}_staging --trigger-http --set-env-vars ACCOUNT_SID=$$TWILIO_ACCOUNT_SID,AUTH_TOKEN=$$TWILIO_AUTH_TOKEN
+      done
+  secretEnv: [ 'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN' ]
+
+- id: Cache deployed functions
+  name: 'gcr.io/cloud-builders/gsutil'
+  dir: 'functions'
+  args: [ '-m', 'rsync', '-d', '-r', 'functions', 'gs://functions-staging/' ]
+
+secrets:
+- kmsKeyName: 'projects/gcb-serverless-demo/locations/global/keyRings/cloudbuilder/cryptoKeys/twilio-accountSid'
+  secretEnv:
+    TWILIO_ACCOUNT_SID: 'CiQAt+auzCD9Ad/Lwm5QeDu6XJm0IholvzrHCdKv1bN5Igyr8a8SSwDNt9lXdBklBEMAkeWsTl3lP8ODPBb6dRt+M2YD2G9UDweG6WZi8o4/ZAu+ZnI4/N43HZIR6J1+yA3mh98PmLbGcve0eTIUO+CbrA=='
+- kmsKeyName: 'projects/gcb-serverless-demo/locations/global/keyRings/cloudbuilder/cryptoKeys/twilio-authToken'
+  secretEnv:
+    TWILIO_AUTH_TOKEN: 'CiQA8oqp2bY3X7KJT+hsK6niJbiX58d1rySn9vcoOi7LnpJ9VIQSSQArPazADZJth3zFe6tXvldhb5cO+7xXM3ikp+DRknnTM9nibcb/oPgyQzWzCMdb4o+Ipz1xmxah9a88TG85zBTl4S0krHWNiXA='
