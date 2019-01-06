@@ -1,0 +1,12 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  dir: 'backend'
+  args: [
+    'app', 
+    'deploy', 
+    'staging.app.yaml',
+    '--version=$COMMIT_SHA',
+    '--quiet'
+  ]
+  
+  
