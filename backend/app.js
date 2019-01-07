@@ -46,7 +46,7 @@ app.get('/products', (req, res) => {
       name: 'Linen blazer',
       image: 'https://images.pexels.com/photos/1143793/pexels-photo-1143793.jpeg?auto=compress&cs=tinysrgb&w=400',
       price: 599,
-      sold_out: true
+      sold_out: false
     }
   ];
 
