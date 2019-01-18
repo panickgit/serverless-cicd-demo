@@ -7,7 +7,7 @@ import { Product } from '../product';
 @Injectable()
 export class ProductsService {
 
-  productsUrl = 'https://staging-dot-cicd-digital-conference-demo.appspot.com/products';
+  productsUrl = 'https://cicd-digital-conference-demo.appspot.com/products';
 
   constructor(private http: HttpClient) { }
 
