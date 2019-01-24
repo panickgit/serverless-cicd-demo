@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 app.get('/products', (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  
+
   let products = [
     {
       name: 'Striped skirt',
